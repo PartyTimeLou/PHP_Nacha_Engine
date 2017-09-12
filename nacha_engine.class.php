@@ -237,7 +237,7 @@ class nacha_file
                                                                             '0'.
                                                                             substr($this->settlement_routing_number,0,8).$this->format_number($this->entry_count, 7).
                                                                             "\n";
-        $this->batches[$this->number_of_batches]['debits'] += $amount*100;
+        $this->batches[$this->number_of_batches]['credits'] += $amount*100;
         $this->batches[$this->number_of_batches]['hash'] += substr($bank_routing_to, 0, 8); //Not clearly documented, but only first 8 digits used in hash sum
         
         $this->line_count++;
@@ -256,7 +256,7 @@ class nacha_file
                                                                                 '0'.
                                                                                 substr($this->settlement_routing_number,0,8).$this->format_number($this->entry_count, 7).
                                                                                 "\n"; 
-            $this->batches[$this->number_of_batches]['credits'] += $amount*100; 
+            $this->batches[$this->number_of_batches]['debits'] += $amount*100; 
             $this->batches[$this->number_of_batches]['hash'] += substr($this->settlement_routing_number, 0, 8); //Not clearly documented, but only first 8 digits used in hash sum
               
             $this->line_count++;
