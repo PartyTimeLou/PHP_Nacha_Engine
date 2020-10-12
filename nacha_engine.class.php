@@ -44,13 +44,14 @@ class nacha_file
     private $settlement_routing_number  = '';
     private $settlement_account_number  = '';
     private $originating_bank_name      = '';
+    private $originating_bank_account_type='CHECKING';
     
     //Can only 
     private $file_type                  = '';
     public  $errors                     = array();
     
     
-    public function __construct($origin_id, $company_id, $company_name, $settlement_routing_number, $settlement_account_number, $originating_bank_name, $balanced_file = false, $settlement_is_savings = false, $file_modifier = 'A') 
+    public function __construct($origin_id, $company_id, $company_name, $settlement_routing_number, $settlement_account_number, $originating_bank_name, $balanced_file = false, $settlement_is_savings = false, $file_modifier = 'A',$originating_bank_account_type='CHECKING') 
     {
         //ACH OR74
         if(!$this->numeric_only($origin_id, 10)) $this->errors[] = 'Invalid origin ID';
@@ -87,6 +88,7 @@ class nacha_file
         $this->settlement_account_number = $settlement_account_number;  
         $this->originating_bank_name = $originating_bank_name;
         $this->balanced_file = $balanced_file;
+        $this->originating_bank_account_type =$originating_bank_account_type;
         
         $this->open_file = true;             
     }
@@ -158,6 +160,13 @@ class nacha_file
         if(!empty($this->errors)) return false;
 
         $this->entry_count++;
+        
+           if($this->originating_bank_account_type=="CHECKING")
+         {
+                $savings_account=false;
+         }
+        
+        
         
         //ACH Rules OR94
         //Transaction code: 22 checking credit, 27 checking debit
@@ -243,6 +252,13 @@ class nacha_file
         $this->line_count++;
         
         if($this->balanced_file){
+            
+         if($this->originating_bank_account_type=="CHECKING")
+         {
+                $savings_account=false;
+         }
+            
+            
             $this->entry_count++;
             $this->batches[$this->number_of_batches]['entries'][$this->entry_count] =    '6'.
                                                                                 ($savings_account?'37':'27').
